@@ -1,0 +1,32 @@
+#!/bin/bash
+
+SHIFTX=${2:-0}
+SHIFTY=${3:-0}
+ZOOM=${4:-100}
+
+W=1920
+H=1080
+
+FFPID=$(ps waxu | grep 'ffplay -f mjpeg -' | awk '/grep/ {next;} {print $2}')
+
+[ -e $FFPID ] && {
+  cat | ffplay -f mjpeg - 2>/dev/null &
+  FFPID=$!
+}
+
+FFWID=$(xdotool search --pid $FFPID)
+
+[ -e "$FFWID" ] || {
+  W=$(xwininfo -id $FFWID | awk '/Width/ {print $2}')
+  H=$(xwininfo -id $FFWID | awk '/Height/ {print $2}')
+}
+
+CUR_HASH=$(sha256sum $1 | awk '{print $1}')
+diff /tmp/uml_hash <(echo $CUR_HASH) || {
+  cat $1 | plantuml -p | convert png:- /tmp/canvas.jpg
+  echo $CUR_HASH >/tmp/uml_hash
+}
+
+convert /tmp/canvas.jpg -resize ${ZOOM}% /tmp/canvas_zoomed.jpg
+convert /tmp/canvas_zoomed.jpg -crop ${W}x${H}+${SHIFTX}+${SHIFTY} /tmp/view.jpg
+for i in {1..3}; do cat /tmp/view.jpg && sleep 0.05; done >/proc/$FFPID/fd/0 &
