@@ -11,7 +11,7 @@ I found nothing so I decided to make this plugin.
 
 ## Naming
 
-Why is it called BlumntUML? Because underlying rendering method is quite dope.
+Why is it called BluntUML? Because underlying rendering method is quite dope.
 Sequence of rendered images being pushed to `ffplay` stdin, which percieves it as 
 mjpeg video stream.
 
