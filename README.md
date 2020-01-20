@@ -2,9 +2,11 @@
 
 This project is based on [plantuml-syntax](https://github.com/aklt/plantuml-syntax).
 
+![example](docs/bluntuml.png) 
+
 ## Motivation
 
-I was looking for plugin which alolows me to see and navigate diagram as I type. 
+I was looking for plugin which allows me to see and navigate diagram as I type. 
 I found nothing so I decided to make this plugin.
 
 ## Naming
@@ -15,7 +17,7 @@ mjpeg video stream.
 
 ## Requirements
 
-You should have thiese binaris available: `ffplay`, `xdotool`, `xorg-xwininfo`
+You should have these binaries available: `plantuml`, `ffplay`, `xdotool`, `xorg-xwininfo`
 
 ## Installation
 
