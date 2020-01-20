@@ -12,7 +12,7 @@ let s:cpo_save = &cpoptions
 set cpoptions&vim
 
 if !exists('g:plantuml_executable_script')
-  let g:plantuml_executable_script='plantuml'
+  let g:plantuml_executable_script=expand('<sfile>:p:h') . '/' . 'plantumlmake'
 endif
 
 if exists('loaded_matchit')
@@ -29,9 +29,63 @@ if exists('loaded_matchit')
         \ ',@startmindmap:@endmindmap'
 endif
 
-if get(g:, 'plantuml_set_makeprg', 1)
-  let &l:makeprg=g:plantuml_executable_script . ' %'
-endif
+let b:puml_shiftx = 0
+let b:puml_shifty = 0
+let b:puml_zoom = 100
+
+function! UpdateMakePrg()
+  if get(g:, 'plantuml_set_makeprg', 1)
+    let &l:makeprg=g:plantuml_executable_script . ' % ' . b:puml_shiftx . ' ' . b:puml_shifty . ' ' . b:puml_zoom . ' &>/dev/null &'
+  endif
+endfunction
+
+function! MoveLeft()
+  let b:puml_shiftx -= 20
+  if b:puml_shiftx < 0
+    let b:puml_shiftx = 0
+  endif
+  call UpdateMakePrg()
+endfunction
+
+function! MoveRight()
+  let b:puml_shiftx += 20
+  call UpdateMakePrg()
+endfunction
+
+function! MoveUp()
+  let b:puml_shifty -= 20
+  if b:puml_shifty < 0
+    let b:puml_shifty = 0
+  endif
+  call UpdateMakePrg()
+endfunction
+
+function! MoveDown()
+  let b:puml_shifty += 20
+  call UpdateMakePrg()
+endfunction
+
+function! ZoomOut()
+  let b:puml_zoom -= 10
+  if b:puml_zoom < 0
+    let b:puml_zoom = 0
+  endif
+  call UpdateMakePrg()
+endfunction
+
+function! ZoomIn()
+  let b:puml_zoom += 10
+  call UpdateMakePrg()
+endfunction
+
+command! BluntumlMoveLeft call MoveLeft()
+command! BluntumlMoveRight call MoveRight()
+command! BluntumlMoveDown call MoveDown()
+command! BluntumlMoveUp call MoveUp()
+command! BluntumlZoomIn call ZoomIn()
+command! BluntumlZoomOut call ZoomOut()
+
+call UpdateMakePrg()
 
 setlocal comments=s1:/',mb:',ex:'/,:' commentstring=/'%s'/ formatoptions-=t formatoptions+=croql
 
